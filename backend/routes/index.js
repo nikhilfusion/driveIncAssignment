@@ -39,8 +39,6 @@ router.post('/fill-locations', async(req, res) => {
     ('Waterford', '9 The Quay, Waterford, Ireland', 1)
   `;
   try {
-    await createDatabase();
-    await createTables();
     await db.query(insertLocationsQuery);
     res.status(200).json({ message: 'Locations inserted successfully' });
   } catch(err) {
@@ -64,8 +62,6 @@ router.post('/fill-vehicles', async(req, res) => {
     ('Volkswagen ID.4', 1, '09:00:00', '17:00:00', '["Mon", "Wed", "Fri", "Sat", "Sun"]', 20);
   `;
   try {
-    await createDatabase();
-    await createTables();
     await db.query(insertVehiclesQuery);
     res.status(200).json({ message: 'vehicles inserted successfully' });
   } catch(err) {

@@ -96,17 +96,15 @@ const columns = [
     key: 'name',
   },
   {
-    title: 'Address',
-    dataIndex: 'address',
-    key: 'address',
-  },
-  {
     title: 'Available Days',
     dataIndex: 'availableDays',
     key: 'availableDays',
-    render: (text) => (
-      <span>{text.join(', ')}</span>
+    render: (text) => {
+      console.log('text', text, typeof text)
+      return (
+      <span>{text ? text.join(', ') : ''}</span>
     )
+  }
   },
   {
     title: 'Available From',

@@ -31,7 +31,7 @@ router.get('/', async(req, res) => {
 
   try {
     const results = await db.query(query, params);
-    res.json(results);
+    res.json(results[0]);
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Internal Server Error" });
@@ -41,11 +41,11 @@ router.get('/', async(req, res) => {
 router.get('/:id', async(req, res) => {
   try {
     const reservationId = req.params.id;
-    const results = await db.query('SELECT * FROM reservations WHERE id = ?', [reservationId]);
+    const [results] = await db.query('SELECT * FROM reservations WHERE id = ?', [reservationId]);
     if (results.length === 0) {
       return res.status(404).send('Reservation not found');
     }
-    res.json(results[0]);
+    res.json(results);
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Internal Server Error" });
@@ -56,7 +56,7 @@ router.get('/:id', async(req, res) => {
 router.post('/', async(req, res) => {
   try {
     const payload = req.body;
-    const results = await db.query('INSERT INTO reservations SET ?', payload)
+    const [results] = await db.query('INSERT INTO reservations SET ?', payload)
     res.json({ id: results.insertId, ...payload });
   } catch (err) {
     console.log(err);
@@ -78,7 +78,7 @@ router.patch('/:id', async(req, res) => {
 router.post('/delete-reservation', async(req, res) => {
   try {
     const {id} = req.body;
-    const result = await db.query('UPDATE reservations SET isDeleted=? WHERE id = ?', [true, id]);
+    const [result] = await db.query('UPDATE reservations SET isDeleted=? WHERE id = ?', [true, id]);
     if (result.affectedRows === 0) {
       return res.status(404).send('Reservation not found');
     }

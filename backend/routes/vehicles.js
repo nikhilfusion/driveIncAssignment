@@ -16,7 +16,9 @@ router.get('/', async(req, res) =>  {
       query += ' AND v.type LIKE ?';
       params.push(`%${vehicleName}%`);
     }
-    const results = await db.query(query, params);
+    console.log("query", query);
+    console.log("params", params);
+    const [results] = await db.execute(query, params);
     res.json(results);
   } catch (err) {
     console.error(err);
@@ -27,11 +29,11 @@ router.get('/', async(req, res) =>  {
 router.get('/:id', async(req, res) =>  {
   try {
     const userId = req.params.id;
-    const results = await db.query('SELECT * FROM vehicles WHERE id = ?', [userId]);
+    const [results] = await db.query('SELECT * FROM vehicles WHERE id = ?', [userId]);
     if (results.length === 0) {
       return res.status(404).send('Vehicle not found');
     }
-    res.json(results[0]);
+    res.json(results);
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Internal Server Error" });
@@ -41,7 +43,7 @@ router.get('/:id', async(req, res) =>  {
 router.post('/', async(req, res) =>  {
   try {
     const payload = req.body;
-    const results = await db.query('INSERT INTO vehicles SET ?', payload)
+    const [results] = await db.query('INSERT INTO vehicles SET ?', payload)
     res.json({ id: results.insertId, ...payload });
   } catch (err) {
     console.log(err);
@@ -64,7 +66,7 @@ router.patch('/:id', async(req, res) =>  {
 router.post('/delete-vehicle', async(req, res) =>  {
   try {
     const {id} = req.body;
-    const result = await db.query('UPDATE vehicles SET isActive=? WHERE id = ?', [false, id]);
+    const [result] = await db.query('UPDATE vehicles SET isActive=? WHERE id = ?', [false, id]);
     if (result.affectedRows === 0) {
       return res.status(404).send('Vehicle not found');
     }
@@ -78,7 +80,7 @@ router.post('/delete-vehicle', async(req, res) =>  {
 router.post('/get-slots', async(req, res) => {
   try {
     const { selectedVehicle, date} = req.body;
-    const results = await db.query('SELECT * FROM reservations WHERE vehicleId = ? AND startTime > ? ', [selectedVehicle.id, date]);
+    const [results] = await db.query('SELECT * FROM reservations WHERE vehicleId = ? AND startTime > ? ', [selectedVehicle.id, date]);
     const slots = getAvailableSlots(selectedVehicle, date, results);
     res.json(slots);
   } catch (err) {

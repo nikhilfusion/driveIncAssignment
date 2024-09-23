@@ -115,29 +115,37 @@ Before running the project, make sure you have the following installed:
    http://localhost:3001
    ```
 
-In the Frontend there are 4 Pages
+   In the Frontend there are 4 Pages
 
-1. Home Page 
-   ```
-      http://localhost:3001
-   ```
-   Its for the customer to book the available time slot. Vehicles availabilities are based on location
+   1. Home Page 
+      ```
+         http://localhost:3001
+      ```
+      Its for the customer to book the available time slot. Vehicles availabilities are based on location
 
-2. Reservations
-   ```
-      http://localhost:3001/reservations
-   ```
-   This page for the Admin to review the reservations and delete if necessary
+   2. Reservations
+      ```
+         http://localhost:3001/reservations
+      ```
+      This page for the Admin to review the reservations and delete if necessary
 
-3. Vehicles
-   ```
-      http://localhost:3001/vehicles
-   ```
+   3. Vehicles
+      ```
+         http://localhost:3001/vehicles
+      ```
 
-   This page for the admin to CRUD Vehicles info
+      This page for the admin to CRUD Vehicles info
 
-4. Settings
+   4. Settings
+      ```
+         http://localhost:3001/settings
+      ```
+      This page for the admin to setup the initial data.
+
+8. For running unit tests:
+   
    ```
-      http://localhost:3001/settings
+      cd backend
+      npm run test
    ```
-   This page for the admin to setup the initial data.
+   

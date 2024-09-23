@@ -9,17 +9,27 @@ const mysqlConfig = {
   user: process.env.DB_USER || "root",
   password: process.env.DB_PASSWORD || "pass123",
   database: process.env.DB_NAME || "driveInc",
+  waitForConnections: true,
+  connectionLimit: 10, // Number of connections in the pool
+  queueLimit: 0       // Unlimited query queue
 };
 
-const connection = mysql.createConnection(mysqlConfig);
+// const connection = mysql.createConnection(mysqlConfig);
 
-// Connect to the database
-connection.connect((err) => {
-  if (err) {
-    console.error('Error connecting to MySQL:', err.stack);
-    return;
-  }
-  console.log('Connected to MySQL');
-});
+// // Connect to the database
+// connection.connect((err) => {
+//   if (err) {
+//     console.error('Error connecting to MySQL:', err.stack);
+//     return;
+//   }
+//   console.log('Connected to MySQL');
+// });
 
-module.exports = connection;
+// module.exports = connection;
+
+
+// Create a MySQL connection pool
+const pool = mysql.createPool(mysqlConfig);
+
+// Export the pool for use in other files
+module.exports = pool.promise();

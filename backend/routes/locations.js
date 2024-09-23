@@ -2,62 +2,65 @@ const express = require('express');
 const router = express.Router();
 const db = require('../models/db');
 
-router.get('/', function(req, res) {
-  db.query("SELECT * FROM locations where isActive=?", [true], (err, results) => {
-    if (err) {
-      console.error(err);
-      res.status(500).json({ message: "Internal Server Error" });
-    }
+router.get('/', async(req, res) => {
+  try {
+    const results = await db.query("SELECT * FROM locations where isActive=?", [true]);
     res.json(results);
-  })
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
 });
 
-router.get('/:id', function(req, res) {
+router.get('/:id', async(req, res) => {
   const locationId = req.params.id;
-  db.query('SELECT * FROM locations WHERE id = ?', [locationId], (err, results) => {
-    if (err) {
-      return res.status(500).send('Error fetching location');
-    }
+  try {
+    const results = await db.query('SELECT * FROM locations WHERE id = ?', [locationId]);
     if (results.length === 0) {
       return res.status(404).send('Location not found');
     }
     res.json(results[0]);
-  });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
 });
 
-router.post('/', function(req, res) {
-  const payload = req.body;
-  db.query('INSERT INTO locations SET ?', payload, (err, results) => {
-    if (err) {
-      console.log(err);
-      return res.status(500).send('Error creating location');
-    }
+router.post('/', async(req, res) => {
+  try {
+    const payload = req.body;
+    const results = await db.query('INSERT INTO locations SET ?', payload)
     res.json({ id: results.insertId, ...payload });
-  });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).send('Error creating location');
+  }
 });
 
-router.put('/:id', function(req, res) {
-  const locationId = req.params.id;
-  const payload = req.body;
-  db.query('UPDATE locations SET ? WHERE id = ?', [payload, locationId], (err, results) => {
-    if (err) {
-      return res.status(500).send('Error updating location');
-    }
+router.patch('/:id', async(req, res) => {
+  try {
+    const locationId = req.params.id;
+    const payload = req.body;
+    await db.query('UPDATE locations SET ? WHERE id = ?', [payload, locationId]);
     res.json(payload);
-  });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
 });
 
-router.put('delete-location', function(req, res) {
-  const {id} = req.body
-  db.query('UPDATE locations SET isActive=? WHERE id = ?', [false, id], (err, result) => {
-    if (err) {
-      return res.status(500).send('Error deleting location');
-    }
+router.patch('delete-location', async(req, res) => {
+  try {
+    const {id} = req.body
+    const result = await db.query('UPDATE locations SET isActive=? WHERE id = ?', [false, id]);
     if (result.affectedRows === 0) {
       return res.status(404).send('Location not found');
     }
     res.send('Location deleted successfully');
-  });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
 });
 
 module.exports = router;

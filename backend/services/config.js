@@ -5,40 +5,26 @@ const {
 } = require('../schema');
 const db = require('../models/db');
 
-
-const createDatabase = () => {
-  return new Promise((resolve, reject) => {
-    try {
-      db.query("CREATE DATABASE IF NOT EXISTS driveInc", (err, results) => {
-        if (err) {
-          console.error(err);
-          reject();
-        }
-        console.log("Database created successfully");
-        resolve();
-      });
-    } catch (error) {
-      console.error(error);
-      reject();
-    }
-  });
-};
+const createDatabase = async() => {
+  try {
+    await db.query("CREATE DATABASE IF NOT EXISTS driveInc");
+    console.log("Database created successfully");
+  } catch (error) {
+    console.error(error);
+  }
+}
 
 const createTables = async() => {
-  [
-    createLocationQuery,
-    createVehicleQuery,
-    createReservationQuery
-  ].map((query) => {
-    db.query(query, (err, results) => {
-      if (err) {
-        console.error(err);
-        return;
-      }
-      console.log("Table created successfully");
-    });
-  });
-};
+  try {
+    await db.query(createLocationQuery);
+    await db.query(createVehicleQuery);
+    await db.query(createReservationQuery);
+    console.log("Tables created successfully");
+  } catch (error) {
+    console.error(error);
+  }
+}
+
 
 module.exports = {
   createDatabase,

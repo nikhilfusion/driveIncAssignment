@@ -16,6 +16,11 @@ services:
     build: # Builds the backend API using the provided Dockerfile
       context: ./backend # Specifies the build context directory for the backend
       dockerfile: Dockerfile # Specifies the Dockerfile to use for building the backend
+    environment:
+      DB_HOST: db
+      DB_USER: root
+      DB_PASSWORD: pass123
+      DB_NAME: driveInc
     ports:
       - 3000:3000 # Maps the container's port 3000 to the host's port 3000
     networks:
